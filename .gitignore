@@ -5,6 +5,7 @@ __pycache__/
 
 .DS_Store
 date.txt
+tiddler.txt
 # C extensions
 *.so
 

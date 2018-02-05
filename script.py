@@ -1,15 +1,17 @@
 from bs4 import BeautifulSoup
 import requests
 import urllib2
+from tiddler_integration import *
 
 download_path = "/Users/kat/Documents/papers/"
 
 def download_file(download_url, title):
-    response = urllib2.urlopen(download_url)
-    file = open(download_path + title + ".pdf", 'wb')
-    file.write(response.read())
-    file.close()
-    print("Download Completed")
+	title = title.replace(" ", "_")
+	response = urllib2.urlopen(download_url)
+	file = open(download_path + title + ".pdf", 'wb')
+	file.write(response.read())
+	file.close()
+	print("Download Completed")
 
 url = "https://arxiv.org/list/quant-ph/new"
 base_url = "https://arxiv.org"
@@ -29,6 +31,8 @@ if date == prev_date:
 	date_choice = raw_input("You are up to date. Quit?")
 	if date_choice == 1:
 		exit()
+
+tiddler_file = open('tiddler.txt', 'w')
 
 authors = [None] * 20
 choice = 0
@@ -54,7 +58,11 @@ for i in range(len(abstract_elements) - 1):
 	print abstract + "\n"
 	choice = raw_input('1/0?\n')
 	if choice == str(1):
-		download_file(pdf_url, title)
+		#download_file(pdf_url, title)
+		tiddler_subtext = add_tiddler_subtext(title,url)
+		for y in range(len(tiddler_subtext)):
+			tiddler_file.write(tiddler_subtext[y])
+			tiddler_file.write("\n")
 
 #replacements
 i = i + 1
@@ -68,7 +76,11 @@ for k in range(i, len(title_divs)):
 	print "Authors: ", ", ".join(x for x in authors[:(j+1)])
 	choice = raw_input('1/0?')
 	if choice == str(1):
-		download_file(pdf_url, title)
+		#download_file(pdf_url, title)
+		tiddler_subtext = add_tiddler_subtext(title,url)
+		for y in range(len(tiddler_subtext)):
+			tiddler_file.write(tiddler_subtext[y])
+			tiddler_file.write("\n")
 
 datefile = open('date.txt', 'w')
 datefile.write(date)
