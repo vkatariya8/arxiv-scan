@@ -58,7 +58,7 @@ for i in range(len(abstract_elements) - 1):
 	print abstract + "\n"
 	choice = raw_input('1/0?\n')
 	if choice == str(1):
-		#download_file(pdf_url, title)
+		download_file(pdf_url, title)
 		tiddler_subtext = add_tiddler_subtext(title,url)
 		for y in range(len(tiddler_subtext)):
 			tiddler_file.write(tiddler_subtext[y])
@@ -76,7 +76,7 @@ for k in range(i, len(title_divs)):
 	print "Authors: ", ", ".join(x for x in authors[:(j+1)])
 	choice = raw_input('1/0?')
 	if choice == str(1):
-		#download_file(pdf_url, title)
+		download_file(pdf_url, title)
 		tiddler_subtext = add_tiddler_subtext(title,url)
 		for y in range(len(tiddler_subtext)):
 			tiddler_file.write(tiddler_subtext[y])
