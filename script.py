@@ -14,6 +14,8 @@ def download_file(download_url, title):
 url = "https://arxiv.org/list/quant-ph/new"
 base_url = "https://arxiv.org"
 
+print "Starting..."
+
 r = requests.get(url)
 data = r.text
 soup = BeautifulSoup(data, 'html.parser')
