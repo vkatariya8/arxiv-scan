@@ -10,9 +10,10 @@ download_path = "/Users/kat/Documents/papers/"
 def download_file(download_url, title):
 	title = title.replace(" ", "_")
 	response = urllib2.urlopen(download_url)
-	file = open(download_path + title + ".pdf", 'wb')
+	file = open(download_path + title.replace("\"", "") + ".pdf", 'wb')
 	file.write(response.read())
 	file.close()
+
 	print("Download Completed")
 
 url = "https://arxiv.org/list/quant-ph/new"
@@ -51,6 +52,7 @@ print "Total number of papers:", len(abstract_elements), ", ", len(link_elements
 
 #new submissions and cross-lists
 i = 0
+c = 0 #comment_count
 while i < len(abstract_elements):
 	pdf_url = base_url + link_elements[i].find_all('a')[2].get('href')
 	title = title_divs[i].text[8:].replace("\n", "")
@@ -59,7 +61,9 @@ while i < len(abstract_elements):
 		authors[j] = authors_div[j].text
 	abstract = abstract_elements[i].text.replace("\n", " ")
 	subjects = subject_divs[i].text.replace("\n", " ")
-	comments = comment_divs[i].text.replace("\n", " ")
+	if all_author_divs[i].find_next('div').text[:5] == "\nSubj":
+		comments = comment_divs[c].text.replace("\n", " ")
+		c = c + 1
 	print i + 1
 	print "\n\nTitle:   ", title
 	print "Authors: ", ", ".join(x for x in authors[:(j+1)])
@@ -70,13 +74,16 @@ while i < len(abstract_elements):
 	#choice = raw_input('1/0\n')
 	print("a/s/d")
 	choice = myGetch()
-	unused_variable = os.system("clear")
 	if choice == 's':
 		download_file(pdf_url, title)
-		tiddler_subtext = add_tiddler_subtext(title,url)
+		tiddler_subtext = add_tiddler_subtext(title,pdf_url)
 		for y in range(len(tiddler_subtext)):
-			tiddler_file.write(tiddler_subtext[y])
-			tiddler_file.write("\n")
+			try:
+				tiddler_file.write(tiddler_subtext[y])
+				tiddler_file.write("\n")
+			except:
+				continue
+	unused_variable = os.system("clear")
 	if choice == 'a':
 		i = i - 1
 		continue
@@ -89,23 +96,29 @@ while i < len(title_divs):
 	title = title_divs[i].text[8:].replace("\n", "")
 	subjects = subject_divs[i].text.replace("\n", " ")
 	authors_div = all_author_divs[i].find_all('a')
-	comments = comment_divs[i].text.replace("\n", " ")
+	if all_author_divs[i].find_next('div').text[:5] == "\nSubj":
+		comments = comment_divs[c].text.replace("\n", " ")
+		c = c + 1
 	for j in range(len(authors_div)):
 		authors[j] = authors_div[j].text
-	print "Title:   ", title
+	print i + 1
+	print "\n\nTitle:   ", title
 	print "Authors: ", ", ".join(x for x in authors[:(j+1)])
 	print subjects[1:]
 	print comments[1:]
 	#choice = raw_input('1/0?')
 	print("a/s/d")
 	choice = myGetch()
-	unused_variable = os.system("clear")
 	if choice == "s":
 		download_file(pdf_url, title)
-		tiddler_subtext = add_tiddler_subtext(title,url)
+		tiddler_subtext = add_tiddler_subtext(title,pdf_url)
 		for y in range(len(tiddler_subtext)):
-			tiddler_file.write(tiddler_subtext[y])
-			tiddler_file.write("\n")
+			try:
+				tiddler_file.write(tiddler_subtext[y])
+				tiddler_file.write("\n")
+			except:
+				continue
+	unused_variable = os.system("clear")
 	if choice == "a":
 		i = i - 1
 		continue
