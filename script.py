@@ -6,6 +6,7 @@ from tiddler_integration import *
 from getch import *
 
 download_path = "/Users/kat/Documents/papers/"
+script_path = "/Users/kat/Documents/arxiv-scan/"
 
 def download_file(download_url, title):
 	title = title.replace(" ", "_")
@@ -27,7 +28,7 @@ soup = BeautifulSoup(data, 'html.parser')
 #checking date
 date_div = soup.find('div', {'class': 'list-dateline'})
 date = date_div.text[-10:]
-datefile = open('date.txt', 'rw')
+datefile = open(script_path + 'date.txt', 'rw')
 prev_date = datefile.read()
 if date == prev_date:
 	date_choice = raw_input("You are up to date. Quit?")
@@ -56,6 +57,8 @@ journal_count = 0
 journal_check = 0
 comment_check = 0 
 while i < len(title_divs):
+	comment_check = 0
+	journal_check = 0
 	pdf_url = base_url + link_elements[i].find_all('a')[2].get('href')
 	title = title_divs[i].text[8:].replace("\n", "")
 	authors_div = all_author_divs[i].find_all('a')
@@ -103,5 +106,9 @@ while i < len(title_divs):
 	unused_variable = os.system("clear")
 	if choice == 'a':
 		i = i - 1
+		if comment_check == 1:
+			c = c - 2
+			if journal_check == 1:
+				journal_count = journal_count - 2
 		continue
 	i = i + 1
