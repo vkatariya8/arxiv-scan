@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import os
 import urllib2
-from tiddler_integration import *
 from getch import *
 
 download_path = "/Users/kat/Documents/papers/"
@@ -21,8 +20,14 @@ base_url = "https://arxiv.org"
 
 print "Starting..."
 
-r = requests.get(url)
-data = r.text
+data = 0
+data2 = 1
+
+while (data != data2):
+	r = requests.get(url)
+	r2 = requests.get(url)
+	data = r.text
+	data2 = r2.text
 soup = BeautifulSoup(data, 'html.parser')
 
 #checking date
@@ -35,9 +40,7 @@ if date == prev_date:
 	if date_choice == 1:
 		exit()
 
-tiddler_file = open('tiddler.txt', 'w')
-
-authors = [None] * 20
+authors = [None] * 40
 choice = 0
 
 link_elements = soup.find_all('dt')
@@ -80,14 +83,18 @@ while i < len(title_divs):
 			journal_check = 1
 		else:
 			journal_check = 0
-	print i + 1
+	if title_divs[i].find_next('div').find_next('div').text[:5] == "\nJour":
+		journal_check = 1
+		journal = journal_divs[journal_count].text[14:]
+		journal_count = journal_count + 1
+	print str(i + 1) + "/" + str(len(abstract_elements)) + ", " + str(len(link_elements) - len(abstract_elements))
 	print "\n\nTitle:   ", title
 	print "Authors: ", ", ".join(x for x in authors[:(j+1)])
 	print subjects[1:]
 	if comment_check == 1:
 		print comments[1:]
-		if journal_check == 1:
-			print "Journal: ", journal
+	if journal_check == 1:
+		print "Journal: ", journal
 	print "\n"
 	if i < len(abstract_elements):
 		print abstract + "\n"
@@ -96,19 +103,16 @@ while i < len(title_divs):
 	if choice == 's':
 		print "Downloading..."
 		download_file(pdf_url, title)
-		tiddler_subtext = add_tiddler_subtext(title,pdf_url)
-		for y in range(len(tiddler_subtext)):
-			try:
-				tiddler_file.write(tiddler_subtext[y])
-				tiddler_file.write("\n")
-			except:
-				continue
 	unused_variable = os.system("clear")
 	if choice == 'a':
 		i = i - 1
 		if comment_check == 1:
 			c = c - 2
-			if journal_check == 1:
-				journal_count = journal_count - 2
+		if journal_check == 1:
+			journal_count = journal_count - 2
 		continue
 	i = i + 1
+
+datefile = open('date.txt', 'w')
+datefile.write(date)
+datefile.close()
