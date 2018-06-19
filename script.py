@@ -113,6 +113,6 @@ while i < len(title_divs):
 		continue
 	i = i + 1
 
-datefile = open('date.txt', 'w')
+datefile = open(script_path + 'date.txt', 'w')
 datefile.write(date)
 datefile.close()
