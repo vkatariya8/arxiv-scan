@@ -4,8 +4,8 @@ import os
 import urllib2
 from getch import *
 
-download_path = "/Users/kat/Documents/papers/"
-script_path = "/Users/kat/Documents/arxiv-scan/"
+download_path = "/Users/kat/Documents/research/papers/"
+script_path = "/Users/kat/Documents/research/tools/arxiv-scan/"
 
 def download_file(download_url, title):
 	title = title.replace(" ", "_")
@@ -22,13 +22,11 @@ print "Starting..."
 
 data = 0
 data2 = 1
-
-while (data != data2):
-	r = requests.get(url)
-	r2 = requests.get(url)
-	data = r.text
-	data2 = r2.text
-soup = BeautifulSoup(data, 'html.parser')
+hdr = {'User-Agent': 'Mozilla/5.0'}
+#r = requests.get(url)
+req = urllib2.Request(url, headers=hdr)
+page = urllib2.urlopen(req)
+soup = BeautifulSoup(page, 'html.parser')
 
 #checking date
 date_div = soup.find('div', {'class': 'list-dateline'})
